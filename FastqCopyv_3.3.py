@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-FastqCopy_v2.py
+FastqCopy_v3.3.py
 
 python3 - tested on v3.6.7 & v3.9.7 
 
 Written and tested by Matthew J Brooks - Mar 10th, 2022
-Updated and tested by Matthew J Brooks - Apr 21th, 2022
+Updated and tested by Zach Batz - January 25th, 2024
 
 This script runs for demultiplexing analysis using BCL Convert v3.9.3
 
@@ -43,8 +43,10 @@ if len(sys.argv) == 3:
 else:
     anal_num = str(1)
     
-#dir_input = '220203_VH00437_7_AAANHCHM5'
-dir_dest = "/FS1/MasterFASTQs/2023Jun-2023Dec"
+
+#dir_dest = "/FS1/MasterFASTQs/2024Jun-2024Dec"
+dir_dest = "/mnt/SDS/nnrl_ngs/MasterFASTQs/2025Jan-2025May"
+
 #dir_internal = 'Analysis/1/Data'
 dir_internal = '/'.join(['Analysis', anal_num, 'Data'])
 
@@ -94,8 +96,8 @@ for i in all_fqs:
 
     # Replace Illumina FQ suffix with NNRL FQ suffix
     #fq_base = re.sub('_S\d+_L\d+.R1_\d+.fastq.gz', '.R1.fastq.gz', os.path.basename(i)) #
-    fq_base = re.sub('_S\d+_R1_\d+.fastq.gz', '.R1.fastq.gz', os.path.basename(i))
-    fq_base = re.sub('_S\d+_R2_\d+.fastq.gz', '.R2.fastq.gz', fq_base)
+    fq_base = re.sub(r'_S\d+_R1_\d+.fastq.gz', '.R1.fastq.gz', os.path.basename(i))
+    fq_base = re.sub(r'_S\d+_R2_\d+.fastq.gz', '.R2.fastq.gz', fq_base)
 
     # Copy the fastq files
     print('Copying ' + fq_base + ' ...')
@@ -118,7 +120,8 @@ print('\nCompleted the fastq copying and md5 checksum.\n')
 ##--------------------##
 
 # Copy SampleSheet
-samp_sheet = glob.glob(os.path.join(dir_input, '*SampleSheet.csv'))[0]
+#samp_sheet = glob.glob(os.path.join(dir_input, '*SampleSheet.csv'))[0]
+samp_sheet = os.path.join(dir_input, dir_internal, 'Reports', 'SampleSheet.csv')
 shutil.copy(samp_sheet, dir_export)
 
 # Copy Demultiplexing stats
